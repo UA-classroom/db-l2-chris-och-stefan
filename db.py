@@ -18,31 +18,33 @@ start with a connection parameter.
 """
 
 
-### THIS IS JUST AN EXAMPLE OF A FUNCTION FOR INSPIRATION FOR A LIST-OPERATION (FETCHING MANY ENTRIES)
-# def get_items(con):
-#     with con:
-#         with con.cursor(cursor_factory=RealDictCursor) as cursor:
-#             cursor.execute("SELECT * FROM items;")
-#             items = cursor.fetchall()
-#     return items
+# USERS
 
 
-### THIS IS JUST INSPIRATION FOR A DETAIL OPERATION (FETCHING ONE ENTRY)
-# def get_item(con, item_id):
-#     with con:
-#         with con.cursor(cursor_factory=RealDictCursor) as cursor:
-#             cursor.execute("""SELECT * FROM items WHERE id = %s""", (item_id,))
-#             item = cursor.fetchone()
-#             return item
+def users_list(connection, is_active: bool | None = None):
+    q = """
+    SELECT user_id, username, email, language, is_verified, is_active, created_at, current_subscription_id
+    FROM users
+    """
+    params = []
+    if is_active is not None:
+        q += " WHERE is_active = %s"
+        params.append(is_active)
+    q += " ORDER BY user_id DESC"
+
+    with connection.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(q, params)
+        return cur.fetchall()
 
 
-### THIS IS JUST INSPIRATION FOR A CREATE-OPERATION
-# def add_item(con, title, description):
-#     with con:
-#         with con.cursor(cursor_factory=RealDictCursor) as cursor:
-#             cursor.execute(
-#                 "INSERT INTO items (title, description) VALUES (%s, %s) RETURNING id;",
-#                 (title, description),
-#             )
-#             item_id = cursor.fetchone()["id"]
-#     return item_id
+def users_get(connection, user_id: int):
+    with connection.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(
+            """
+            SELECT user_id, username, email, language, is_verified, is_active, created_at, current_subscription_id
+            FROM users
+            WHERE user_id = %s
+            """,
+            (user_id,),
+        )
+        return cur.fetchone()
