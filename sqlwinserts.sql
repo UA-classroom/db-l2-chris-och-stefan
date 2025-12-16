@@ -1,7 +1,39 @@
 -- -----------------------------------------------------
 -- 1. ROLLER & RÄTTIGHETER
 -- ----------------------------------------------------
+-- 1. CLEANUP (Drop old tables to start fresh)
+DROP TABLE IF EXISTS participant_answer CASCADE;
+DROP TABLE IF EXISTS session_participant CASCADE;
+DROP TABLE IF EXISTS game_session CASCADE;
+DROP TABLE IF EXISTS documents CASCADE;     -- Added this
+DROP TABLE IF EXISTS support_case CASCADE;  -- Added this
+DROP TABLE IF EXISTS course_content CASCADE;
+DROP TABLE IF EXISTS course CASCADE;
+DROP TABLE IF EXISTS story_content CASCADE;
+DROP TABLE IF EXISTS story CASCADE;
+DROP TABLE IF EXISTS quiz_answer CASCADE;
+DROP TABLE IF EXISTS quiz_question CASCADE;
+DROP TABLE IF EXISTS quiz CASCADE;
+DROP TABLE IF EXISTS creation_method CASCADE;
+DROP TABLE IF EXISTS payment CASCADE;
+DROP TABLE IF EXISTS subscription CASCADE;
+DROP TABLE IF EXISTS user_company CASCADE;
+DROP TABLE IF EXISTS user_teacher CASCADE;
+DROP TABLE IF EXISTS user_student CASCADE;
+DROP TABLE IF EXISTS user_role CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS subscription_features CASCADE;
+DROP TABLE IF EXISTS features CASCADE;
+DROP TABLE IF EXISTS subscription_plan CASCADE;
+DROP TABLE IF EXISTS media_gif CASCADE;
+DROP TABLE IF EXISTS media_image CASCADE;
+DROP TABLE IF EXISTS media_video CASCADE;
+DROP TABLE IF EXISTS media CASCADE;
+DROP TABLE IF EXISTS role_permission CASCADE;
+DROP TABLE IF EXISTS permission CASCADE;
+DROP TABLE IF EXISTS role CASCADE;
 
+-- ... Your CREATE TABLE code starts here ...
 
 CREATE TABLE role (
     role_id SERIAL PRIMARY KEY,
@@ -128,7 +160,7 @@ CREATE TABLE user_company (
 -- Subscription
 CREATE TABLE subscription (
     subscription_id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES users(user_id),
+    user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE, 
     plan_id INTEGER NOT NULL REFERENCES subscription_plan(plan_id),
     start_date TIMESTAMP,
     end_date TIMESTAMP,
@@ -158,7 +190,7 @@ CREATE TABLE quiz (
     quiz_id SERIAL PRIMARY KEY,
     name VARCHAR(100),
     creation_method_id INTEGER REFERENCES creation_method(method_id),
-    creator_id INTEGER REFERENCES users(user_id),
+    creator_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
     media_id INTEGER REFERENCES media(media_id)
 );
 
@@ -187,7 +219,7 @@ CREATE TABLE story (
     story_id SERIAL PRIMARY KEY,
     name VARCHAR(255),
     created_at TIMESTAMP,
-    creator_id INTEGER REFERENCES users(user_id)
+    creator_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE 
 );
 
 CREATE TABLE story_content (
@@ -221,7 +253,7 @@ CREATE TABLE course_content (
 
 CREATE TABLE game_session (
     session_id SERIAL PRIMARY KEY,
-    quiz_id INTEGER REFERENCES quiz(quiz_id),
+    quiz_id INTEGER REFERENCES quiz(quiz_id) ON DELETE CASCADE,
     host_id INTEGER REFERENCES users(user_id),
     access_code VARCHAR(10),
     started_at TIMESTAMP,

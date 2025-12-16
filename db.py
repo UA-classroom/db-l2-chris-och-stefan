@@ -63,6 +63,7 @@ def users_create(
             """,
             (username, email, password_hash, language),
         )
+        connection.commit()
         return cur.fetchone()
 
 
