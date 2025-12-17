@@ -1,25 +1,6 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
-"""
-This file is responsible for making database queries, which your fastapi endpoints/routes can use.
-The reason we split them up is to avoid clutter in the endpoints, so that the endpoints might focus on other tasks 
-
-- Try to return results with cursor.fetchall() or cursor.fetchone() when possible
-- Make sure you always give the user response if something went right or wrong, sometimes 
-you might need to use the RETURNING keyword to garantuee that something went right / wrong
-e.g when making DELETE or UPDATE queries
-- No need to use a class here
-- Try to raise exceptions to make them more reusable and work a lot with returns
-- You will need to decide which parameters each function should receive. All functions 
-start with a connection parameter.
-- Below, a few inspirational functions exist - feel free to completely ignore how they are structured
-- E.g, if you decide to use psycopg3, you'd be able to directly use pydantic models with the cursor, these examples are however using psycopg2 and RealDictCursor
-"""
-
-
-# USERS
-# __________________________________________________________________
 
 
 def users_list(connection, is_active: bool | None = None):
@@ -173,7 +154,7 @@ def user_roles_remove(connection, user_id: int, role_id: int) -> int:
 
 
 # RBAC: ROLES & PERMISSIONS
-# ___________________________________________________________________________
+
 def roles_list(connection):
     with connection.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute("SELECT role_id, name, description FROM role ORDER BY role_id")
@@ -297,7 +278,7 @@ def role_permissions_remove(connection, role_id: int, permission_id: int) -> int
 
 
 # QUIZZES / QUESTIONS / ANSWERS
-# ____________________________________________________________________________________________
+
 def quizzes_list(connection, creator_id: int | None = None):
     q = "SELECT quiz_id, name, creation_method_id, creator_id, media_id FROM quiz"
     params = []
@@ -534,7 +515,7 @@ def answers_delete(connection, answer_id: int) -> int:
 
 
 # SESSIONS / PARTICIPANTS / PARTICIPANT_ANSWER
-# _______________________________________________________________________________________
+
 def sessions_list(connection, quiz_id: int | None = None):
     q = """
     SELECT session_id, quiz_id, host_id, access_code, started_at, ended_at, current_question_index
